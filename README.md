@@ -13,7 +13,9 @@ Usage
 Require jade-browser-middleware
 
 ```javascript
-var jbm = require('./jade-browser-middleware')
+var express = require('express'),
+    jbm = require('jade-browser-middleware'),
+    app = express();
 ````
 
 Assign the middleware to your Express app and define the source of your templates, and the namespace you'd like to use for compiled template functions in the browser.
@@ -33,7 +35,10 @@ src property you defined, if it's not there or changes have been made to the fil
 If you need to execute a jade template during runtime, you can access the 'jade' function through the namespace you defined.
 
 ````javascript
-
 NS.templates.compileJadeTemplate()
-
 ````
+
+LICENSE
+-------
+
+MIT
