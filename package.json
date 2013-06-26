@@ -19,6 +19,7 @@
         "fs"
     ],
     "author": "Joseph Chapman",
+    "email": "info@josephchapman.com",
     "license": "MIT",
     "devDependencies": {
         "sinon": "~1.7.3",
@@ -26,7 +27,6 @@
         "express": "~3.2.6",
         "mocha": "~1.9.0",
         "chai": "~1.5.0",
-        "sinon-chai": "~2.4.0",
-        "supertest": "~0.6.0"
+        "sinon-chai": "~2.4.0"
     }
 }
