@@ -1,0 +1,32 @@
+{
+    "name": "jade-browser-middleware",
+    "version": "0.1.0",
+    "description": "Jade middelware precompiles Jade templates for functional execution in the browser",
+    "main": "index.js",
+    "scripts": {
+        "test": "mocha"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/JoeChapman/jade-browser-middleware"
+    },
+    "keywords": [
+        "jade",
+        "middleware",
+        "browser",
+        "precompile",
+        "express",
+        "fs"
+    ],
+    "author": "Joseph Chapman",
+    "license": "MIT",
+    "devDependencies": {
+        "sinon": "~1.7.3",
+        "jade": "~0.31.0",
+        "express": "~3.2.6",
+        "mocha": "~1.9.0",
+        "chai": "~1.5.0",
+        "sinon-chai": "~2.4.0",
+        "supertest": "~0.6.0"
+    }
+}

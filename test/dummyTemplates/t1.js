@@ -1,0 +1,76 @@
+(function () { 
+NS.t1 = function anonymous(locals) {
+jade.debug = [{ lineno: 1, filename: undefined }];
+try {
+var buf = [];
+jade.debug.unshift({ lineno: 1, filename: jade.debug[0].filename });
+jade.debug.unshift({ lineno: 1, filename: jade.debug[0].filename });
+buf.push("<!DOCTYPE html>");
+jade.debug.shift();
+jade.debug.unshift({ lineno: 3, filename: jade.debug[0].filename });
+buf.push("<html>");
+jade.debug.unshift({ lineno: undefined, filename: jade.debug[0].filename });
+jade.debug.unshift({ lineno: 3, filename: jade.debug[0].filename });
+buf.push("<meta charset=\"utf-8\">");
+jade.debug.shift();
+jade.debug.unshift({ lineno: 4, filename: jade.debug[0].filename });
+buf.push("<title>");
+jade.debug.unshift({ lineno: undefined, filename: jade.debug[0].filename });
+jade.debug.unshift({ lineno: 4, filename: jade.debug[0].filename });
+buf.push("test");
+jade.debug.shift();
+jade.debug.shift();
+buf.push("</title>");
+jade.debug.shift();
+jade.debug.unshift({ lineno: 7, filename: jade.debug[0].filename });
+buf.push("<body>");
+jade.debug.unshift({ lineno: undefined, filename: jade.debug[0].filename });
+jade.debug.unshift({ lineno: 7, filename: jade.debug[0].filename });
+buf.push("<h1>");
+jade.debug.unshift({ lineno: undefined, filename: jade.debug[0].filename });
+jade.debug.unshift({ lineno: 7, filename: jade.debug[0].filename });
+buf.push("test");
+jade.debug.shift();
+jade.debug.shift();
+buf.push("</h1>");
+jade.debug.shift();
+jade.debug.unshift({ lineno: 9, filename: jade.debug[0].filename });
+buf.push("<p>");
+jade.debug.unshift({ lineno: undefined, filename: jade.debug[0].filename });
+jade.debug.unshift({ lineno: 9, filename: jade.debug[0].filename });
+buf.push("Lorem ipsum dolor sit amet, consectetur adipisicing elit,");
+jade.debug.shift();
+buf.push("\n");
+jade.debug.unshift({ lineno: 10, filename: jade.debug[0].filename });
+buf.push("sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
+jade.debug.shift();
+buf.push("\n");
+jade.debug.unshift({ lineno: 11, filename: jade.debug[0].filename });
+buf.push("Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris");
+jade.debug.shift();
+buf.push("\n");
+jade.debug.unshift({ lineno: 12, filename: jade.debug[0].filename });
+buf.push("nisi ut aliquip ex ea commodo consequat.");
+jade.debug.shift();
+buf.push("\n");
+jade.debug.unshift({ lineno: 13, filename: jade.debug[0].filename });
+buf.push("Duis aute irure dolor in reprehenderit in voluptate velit esse");
+jade.debug.shift();
+buf.push("\n");
+jade.debug.unshift({ lineno: 14, filename: jade.debug[0].filename });
+buf.push("cillum dolore eu fugiat nulla pariatur.");
+jade.debug.shift();
+jade.debug.shift();
+buf.push("</p>");
+jade.debug.shift();
+jade.debug.shift();
+buf.push("</body>");
+jade.debug.shift();
+jade.debug.shift();
+buf.push("</html>");
+jade.debug.shift();
+jade.debug.shift();;return buf.join("");
+} catch (err) {
+  jade.rethrow(err, jade.debug[0].filename, jade.debug[0].lineno);
+}
+}}())
