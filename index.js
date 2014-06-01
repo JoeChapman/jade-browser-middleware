@@ -3,7 +3,8 @@
 var fs = require('fs'),
     jade = require('jade'),
     url = require('url'),
-    join = require('path').join,
+    pathUtil = require('path'),
+    join = pathUtil.join,
     EventEmitter = require('events').EventEmitter;
 
 var templateCompiled = {};
@@ -37,10 +38,8 @@ JadeCompiler.prototype = {
                 return this.error(err);
             }
 
-            var script = jade.compile(jadeString, {client: true}),
-                from = this.paths.jadePath.lastIndexOf('/') + 1,
-                to = this.paths.jadePath.lastIndexOf('.'),
-                name = this.paths.jadePath.slice(from, to);
+            var script = jade.compileClient(jadeString),
+                name = pathUtil.basename(this.paths.jadePath).match(/^[^.]+/)[0].replace(/[^\w\d$_]/g,"_");
 
             script = '.' + name + ' = ' + script;
 
