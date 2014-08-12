@@ -5,69 +5,12 @@ var fs = require('fs'),
     url = require('url'),
     pathUtil = require('path'),
     join = pathUtil.join,
-    EventEmitter = require('events').EventEmitter;
+    JadeCompiler = require('./lib/compiler');
 
-var templateCompiled = {};
-var JadeCompiler;
-
-
-module.exports.JadeCompiler = JadeCompiler = function (options) {
-    this.startString = '(function () { \n' + options.namespace;
-    this.endString = '}())';
-    this.paths = options.paths;
-    this.compilerFunction = options.compile;
-    this.namespace = options.namespace;
-    this.next = options.next;
-};
-
-var queue = JadeCompiler.queue = {};
-
-JadeCompiler.prototype = {
-
-    error: function (err) {
-        this.next('ENOENT' === err.code ? null : err);
-    },
-
-    compile: function () {
-
-        queue[this.paths.jadePath] = new EventEmitter();
-
-        fs.readFile(this.paths.jadePath, 'utf8', function (err, jadeString) {
-
-            if (err) {
-                return this.error(err);
-            }
-
-            var script = jade.compileClient(jadeString),
-                name = pathUtil.basename(this.paths.jadePath).match(/^[^.]+/)[0].replace(/[^\w\d$_]/g,"_");
-
-            script = '.' + name + ' = ' + script;
-
-            this.string = this.startString + script + this.endString;
-
-            fs.writeFile(this.paths.jsPath, this.string, function (err) {
-
-                if (err) {
-                    return this.error(err);
-                }
-
-                delete templateCompiled[this.paths.jsPath];
-                templateCompiled[this.paths.jsPath] = true;
-
-                queue[this.paths.jadePath].emit('end');
-                delete queue[this.paths.jadePath];
-
-                this.next();
-
-            }.bind(this));
-
-        }.bind(this));
-    }
-};
-
-module.exports.middleware = function middleware(options) {
+module.exports = function middleware(options) {
 
     var src,
+        dest,
         compilerFunction,
         namespace;
 
@@ -76,6 +19,7 @@ module.exports.middleware = function middleware(options) {
 
     // Source dir required
     src = options.src;
+    dest = options.dest || src;
 
     if (!src) {
         throw new Error('templates() requires "src" directory');
@@ -86,7 +30,6 @@ module.exports.middleware = function middleware(options) {
 
     // Middleware
     return function (req, res, next) {
-
         var path,
             paths,
             compiler;
@@ -102,7 +45,7 @@ module.exports.middleware = function middleware(options) {
             path = path.replace('/templates', '');
 
             paths = {
-                jsPath: join(src, path),
+                jsPath: join(dest, path),
                 jadePath: join(src, path.replace('.js', '.jade'))
             };
             compiler = new JadeCompiler({
@@ -111,15 +54,16 @@ module.exports.middleware = function middleware(options) {
                 namespace: namespace,
                 next: next
             });
+            // console.log('PATH >>>', compiler);
 
             // Hang the request until the previous has been processed
-            if (queue[paths.jadePath]) {
-                return queue[paths.jadePath].on('end', next);
+            if (JadeCompiler.queue[paths.jadePath]) {
+                return JadeCompiler.queue[paths.jadePath].on('end', next);
             }
 
             // Re-compile on server restart, disregarding
             // mtimes since we need to map templateCompiled
-            if (!templateCompiled[paths.jsPath]) {
+            if (!JadeCompiler.templateCompiled[paths.jsPath]) {
                 return compiler.compile();
             }
 

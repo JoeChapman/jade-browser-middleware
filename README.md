@@ -8,34 +8,36 @@ project folder as functions you can access in your client-side JS.
 Usage
 -----
 
-### On the server
+### In Node
 
 Require jade-browser-middleware
 
 ```javascript
 var express = require('express'),
-    jbm = require('jade-browser-middleware'),
+    jade-browser-middleware = require('jade-browser-middleware'),
     app = express();
 ````
 
 Assign the middleware to your Express app and define the source of your templates, and the namespace you'd like to use for compiled template functions in the browser.
 
 ```javascript
-app.use(jbm.middleware({
-    src: __dirname + '/public/templates',
-    namespace: 'NS.templates'
+app.use(jade-browser-middleware({
+    src: __dirname + '/views/includes',
+    dest: __dirname + '/public/templates'
+    namespace: 'templates'
 }));
 ````
 
 On each request the middleware will look for the any JS files in the
-src property you defined, if it's not there or changes have been made to the file, it'll compile it, and write it to the src directory as the JS file named in the request.
+src property you defined, if it's not there or changes have been made to the file, it'll compile it, and write it to the src directory as the JS file named in the request, even if the directory doesn't exist.
+
 
 ### In the browser
 
-If you need to execute a jade template during runtime, you can access the 'jade' function through the namespace you defined.
+Request a template i.e. `script src='templates/filename.js'` and if the equivalent jade template exists in your `src` directory, it will be added to an object namespaced with the namespace you created on the server (defaults to jadeTemplates).
 
 ````javascript
-NS.templates.compileJadeTemplate()
+templates.compileJadeTemplate()
 ````
 
 LICENSE

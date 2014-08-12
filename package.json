@@ -1,6 +1,6 @@
 {
     "name": "jade-browser-middleware",
-    "version": "0.1.1",
+    "version": "0.2.0",
     "description": "Jade middelware precompiles Jade templates for functional execution in the browser",
     "main": "index.js",
     "dependencies": {
@@ -29,6 +29,7 @@
         "express": "~3.2.6",
         "mocha": "~1.9.0",
         "chai": "~1.5.0",
-        "sinon-chai": "~2.4.0"
+        "sinon-chai": "~2.4.0",
+        "node-fs": "0.1.7"
     }
 }

@@ -2,7 +2,8 @@
 
 describe('jade-browser-middleware', function () {
 
-    var jbm = require('../'),
+    var Compiler = require('../lib/compiler'),
+        middleware = require('../'),
         jade = require('jade'),
         fs = require('fs');
 
@@ -19,7 +20,7 @@ describe('jade-browser-middleware', function () {
             };
 
         beforeEach(function () {
-            compiler = new jbm.JadeCompiler(options);
+            compiler = new Compiler(options);
         });
 
         describe('.compile()', function () {
@@ -49,27 +50,26 @@ describe('jade-browser-middleware', function () {
                 url: '/templates/t1.js'
             },
             res = {},
-            next = function () {},
-            middleware;
+            next = function () {};
 
         before(function () {
-            middleware = jbm.middleware(options);
+            middleware = middleware(options);
         });
 
         describe('first get templates/t1.js', function () {
 
             beforeEach(function () {
-                delete jbm.JadeCompiler.queue[__dirname + '/dummyTemplates/t1.jade'];
-                sinon.stub(jbm.JadeCompiler.prototype, 'compile');
+                delete Compiler.queue[__dirname + '/dummyTemplates/t1.jade'];
+                sinon.stub(Compiler.prototype, 'compile');
                 middleware(req, res, next);
             });
 
             afterEach(function () {
-                jbm.JadeCompiler.prototype.compile.restore();
+                Compiler.prototype.compile.restore();
             });
 
             it('calls compile', function () {
-                jbm.JadeCompiler.prototype.compile.should.have.been.called;
+                Compiler.prototype.compile.should.have.been.called;
             });
 
         });
@@ -77,12 +77,12 @@ describe('jade-browser-middleware', function () {
         describe('subsequent get templates/t1.js', function () {
 
             beforeEach(function () {
-                sinon.stub(jbm.JadeCompiler.prototype, 'compile');
+                sinon.stub(Compiler.prototype, 'compile');
                 middleware(req, res, next);
             });
 
             it('calls compile', function () {
-                jbm.JadeCompiler.prototype.compile.should.have.been.called;
+                Compiler.prototype.compile.should.have.been.called;
             });
 
         });
