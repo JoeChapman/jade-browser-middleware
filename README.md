@@ -1,44 +1,64 @@
 Jade-Browser-Middleware
 -----------------------
 
-Jade-Browser-Middleware is a simple piece of middleware for express
-that precompiles your Jade templates and writes them to files in your
-project folder as functions you can access in your client-side JS.
+**Jade-Browser-Middleware** is a piece of middleware for express that precompiles your Jade templates on the fly and writes them to files in your
+chosen destination as functions you can execute in your client-side JS.
 
-Usage
------
+## How it works
+
+Request a compiled template, i.e., `script src='/templates/my-jade-template.js'`, and if it does not yet exist, **Jade-Browser-Middleware** will look in your chosen `src` location for `my-jade-template.jade`.
+If it's found, a compiled version, `my-jade-template.js` will be created and written to an optional `dest` location or `src`.
+
+If the template already exists, **Jade-Browser-Middleware** will check if the original template has been modified, and if so, will recompile the template.
+
+When the template is compiled, the function will be assigned to a namespace (defaults to 'jadeTemplates') on the `window` object, i.e., `window.jadeTemplates.my_jade_templates = function (...) {...};`.
+
+Then you can do `window.jadeTemplates.my_jade_templates([locals]);`, which returns the markup compiled with optional locals.
+
+
+## Setup
+
+`$ npm install jade-browser-middleware`
 
 ### In Node
 
-Require jade-browser-middleware
-
-```javascript
+```
 var express = require('express'),
-    jade-browser-middleware = require('jade-browser-middleware'),
+    jadeBrowserMiddleware = require('jade-browser-middleware'),
     app = express();
-````
+```
 
-Assign the middleware to your Express app and define the source of your templates, and the namespace you'd like to use for compiled template functions in the browser.
+Use the middleware in your app and pass in options.
 
-```javascript
-app.use(jade-browser-middleware({
-    src: __dirname + '/views/includes',
+```
+app.use(jadeBrowserMiddleware(__dirname + '/views/includes', {
     dest: __dirname + '/public/templates'
-    namespace: 'templates'
+    namespace: 'templates',
+    format: 'camelcase'
 }));
-````
+```
 
-On each request the middleware will look for the any JS files in the
-src property you defined, if it's not there or changes have been made to the file, it'll compile it, and write it to the src directory as the JS file named in the request, even if the directory doesn't exist.
+- `src` - (required) is the source location of the Jade templates you want to have compiled.
+For backwards-compatibility `src` can be defined as an option i.e., `{ src: '...' }`
 
+#### Options
+
+- `dest`- the destination for your compiled templates (defaults to `src`).
+- `namespace` - the namespace for your templates map in the browser (defaults to 'jadeTemplates').
+- `format` - the format of the function name added to the namespace for each template request (defaults to 'underscore').
+
+##### format
+
+- 'underscore' - will convert spaces and hyphens to underscores i.e., *my jade-template.jade* becomes *my_jade_template.jade*
+- 'camelcase' - will convert strings to camelcase i.e., *my jade-template.jade* becomes *myJadeTemplate.jade*
 
 ### In the browser
 
-Request a template i.e. `script src='templates/filename.js'` and if the equivalent jade template exists in your `src` directory, it will be added to an object namespaced with the namespace you created on the server (defaults to jadeTemplates).
+Get [Jade runtime](https://raw.githubusercontent.com/visionmedia/jade/master/runtime.js) and include in your project, i.e., `script src='lib/runtime.js'`
 
-````javascript
-templates.compileJadeTemplate()
-````
+
+Request a template i.e., `script src='templates/my-jade-template.js'` and if the equivalent jade template exists in your `src` location, it will be compiled and written to an optional `dest` location or `src`.
+
 
 LICENSE
 -------

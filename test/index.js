@@ -15,7 +15,8 @@ describe('jade-browser-middleware', function () {
                     jadePath: __dirname + '/dummyTemplates/t1.jade'
                 },
                 compilerFunction: jade.compile,
-                namespace: 'NS',
+                namespace: 'templates',
+                format: 'camelcase',
                 next: function () {}
             };
 
@@ -42,8 +43,7 @@ describe('jade-browser-middleware', function () {
 
     describe('request', function () {
         var options = {
-                src:  __dirname + '/dummyTemplates/',
-                namespace: 'BGCH.templates'
+                namespace: 'templates'
             },
             req = {
                 method: 'GET',
@@ -53,7 +53,7 @@ describe('jade-browser-middleware', function () {
             next = function () {};
 
         before(function () {
-            middleware = middleware(options);
+            middleware = middleware(__dirname + '/dummyTemplates/', options);
         });
 
         describe('first get templates/t1.js', function () {

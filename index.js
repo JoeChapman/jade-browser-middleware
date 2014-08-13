@@ -7,25 +7,23 @@ var fs = require('fs'),
     join = pathUtil.join,
     JadeCompiler = require('./lib/compiler');
 
-module.exports = function middleware(options) {
+module.exports = function middleware(src, options) {
 
-    var src,
-        dest,
-        compilerFunction,
-        namespace;
-
-    options = options || {};
-    namespace = options.namespace || 'jadeTemplates';
-
-    // Source dir required
-    src = options.src;
-    dest = options.dest || src;
-
-    if (!src) {
+    if (!src && !options.src) {
         throw new Error('templates() requires "src" directory');
     }
 
-    // Default compile callback
+    var dest,
+        compilerFunction,
+        format,
+        namespace;
+
+    // Set defaults
+    options = options || {};
+    src = src || options.src;
+    format = options.format || 'underscore';
+    namespace = options.namespace || 'jadeTemplates';
+    dest = options.dest || src;
     compilerFunction = options.compile || jade.compile;
 
     // Middleware
@@ -41,9 +39,7 @@ module.exports = function middleware(options) {
         path = url.parse(req.url).pathname;
 
         if (/\.js$/.test(path) && path.indexOf('/templates/') !== -1) {
-
             path = path.replace('/templates', '');
-
             paths = {
                 jsPath: join(dest, path),
                 jadePath: join(src, path.replace('.js', '.jade'))
@@ -51,16 +47,14 @@ module.exports = function middleware(options) {
             compiler = new JadeCompiler({
                 paths: paths,
                 compile: compilerFunction,
+                format: format,
                 namespace: namespace,
                 next: next
             });
-            // console.log('PATH >>>', compiler);
-
             // Hang the request until the previous has been processed
             if (JadeCompiler.queue[paths.jadePath]) {
                 return JadeCompiler.queue[paths.jadePath].on('end', next);
             }
-
             // Re-compile on server restart, disregarding
             // mtimes since we need to map templateCompiled
             if (!JadeCompiler.templateCompiled[paths.jsPath]) {
@@ -69,9 +63,7 @@ module.exports = function middleware(options) {
 
             // Compare mtimes
             fs.stat(paths.jadePath, function (err, jadeStats) {
-                if (err) {
-                    return this.error(err);
-                }
+                if (err) return this.error(err);
                 fs.stat(paths.jsPath, function (err, jsStats) {
                     // JS has not been compiled, compile it!
                     if (err) {
@@ -90,7 +82,6 @@ module.exports = function middleware(options) {
                     }
                 }.bind(this));
             }.bind(this));
-
         } else {
             next();
         }
