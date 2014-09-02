@@ -57,10 +57,6 @@ module.exports = function middleware(src, options) {
                 return Compiler.queue[paths.jadePath].on('end', next);
             }
 
-            if (!Compiler.templates[paths.jsPath]) {
-                return compiler.compile();
-            }
-
             // Compile if there are differences between the source and the output
             fs.stat(paths.jadePath, function (err, jadeStats) {
                 if (err) return this.error(err);
