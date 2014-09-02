@@ -5,7 +5,7 @@ var fs = require('fs'),
     url = require('url'),
     pathUtil = require('path'),
     join = pathUtil.join,
-    JadeCompiler = require('./lib/compiler');
+    Compiler = require('./lib/compiler');
 
 module.exports = function middleware(src, options) {
 
@@ -35,7 +35,6 @@ module.exports = function middleware(src, options) {
         if ('GET' !== req.method && 'HEAD' !== req.method) {
             return next();
         }
-
         path = url.parse(req.url).pathname;
 
         if (/\.js$/.test(path) && path.indexOf('/templates/') !== -1) {
@@ -44,24 +43,25 @@ module.exports = function middleware(src, options) {
                 jsPath: join(dest, path),
                 jadePath: join(src, path.replace('.js', '.jade'))
             };
-            compiler = new JadeCompiler({
+
+            compiler = new Compiler({
                 paths: paths,
                 compile: compilerFunction,
                 format: format,
                 namespace: namespace,
                 next: next
             });
+
             // Hang the request until the previous has been processed
-            if (JadeCompiler.queue[paths.jadePath]) {
-                return JadeCompiler.queue[paths.jadePath].on('end', next);
+            if (Compiler.queue[paths.jadePath]) {
+                return Compiler.queue[paths.jadePath].on('end', next);
             }
-            // Re-compile on server restart, disregarding
-            // mtimes since we need to map templateCompiled
-            if (!JadeCompiler.templateCompiled[paths.jsPath]) {
+
+            if (!Compiler.templates[paths.jsPath]) {
                 return compiler.compile();
             }
 
-            // Compare mtimes
+            // Compile if there are differences between the source and the output
             fs.stat(paths.jadePath, function (err, jadeStats) {
                 if (err) return this.error(err);
                 fs.stat(paths.jsPath, function (err, jsStats) {
