@@ -1,6 +1,8 @@
 Jade-Browser-Middleware
 -----------------------
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/JoeChapman/jade-browser-middleware.svg)](https://greenkeeper.io/)
+
 **Jade-Browser-Middleware** is a piece of middleware for express that precompiles your Jade templates on the fly and writes them to files in your
 chosen destination as functions you can execute in your client-side JS.
 
